@@ -28,7 +28,7 @@ async function main() {
         width: size,
         height: size,
         channels: 3,
-        background: { r: 99, g: 102, b: 241 }, // #6366f1
+        background: { r: 15, g: 23, b: 42 }, // #0f172a 深邃蓝黑
       },
     })
       .composite([{ input: designPng, top: offset, left: offset }])

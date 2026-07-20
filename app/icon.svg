@@ -1,32 +1,57 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="15 5 170 170" width="100%" height="100%">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#6366f1"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
-    </linearGradient>
-    <linearGradient id="bubble" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
-      <stop offset="100%" stop-color="#e0e7ff"/>
+    <mask id="spark-cutout">
+      <rect x="0" y="0" width="200" height="200" fill="white" />
+      <path d="M100 70 Q100 90 80 90 Q100 90 100 110 Q100 90 120 90 Q100 90 100 70 Z" fill="black" />
+    </mask>
+
+    <linearGradient id="echo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="100%" stop-color="#a5b4fc" stop-opacity="0.3" />
     </linearGradient>
   </defs>
 
-  <!-- Background circle -->
-  <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
+  <!-- ==================== 图标本体 ==================== -->
+  
+  <!-- 最外层 Echo (Radius: 70) 
+       尾巴顶点 (15, 175) 绝对正对圆心 (100, 90) -->
+  <path d="M 100 20 
+           A 70 70 0 1 1 58 146 
+           L 15 175 
+           L 44 132 
+           A 70 70 0 0 1 100 20 Z" 
+        fill="none" 
+        stroke="rgba(255,255,255,0.2)" 
+        stroke-width="2" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
+  
+  <!-- 中间层 Echo (Radius: 55)
+       按圆心绝对比例缩放计算，缝隙上下完美一致 -->
+  <path d="M 100 35 
+           A 55 55 0 1 1 67 134 
+           L 33.2 156.8 
+           L 56 123 
+           A 55 55 0 0 1 100 35 Z" 
+        fill="none" 
+        stroke="url(#echo-grad)" 
+        stroke-width="4" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" />
 
-  <!-- Echo rings (outer, fading) -->
-  <circle cx="256" cy="256" r="160" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="2"/>
-  <circle cx="256" cy="256" r="200" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
-  <circle cx="256" cy="256" r="240" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-
-  <!-- Speech bubble -->
-  <path d="M170 140 Q170 110 200 110 L312 110 Q342 110 342 140 L342 260 Q342 290 312 290 L260 290 L210 340 L220 290 L200 290 Q170 290 170 260 Z"
-        fill="url(#bubble)"/>
-
-  <!-- Echo waves inside bubble -->
-  <path d="M210 190 Q225 175 256 175 Q287 175 302 190"
-        fill="none" stroke="#6366f1" stroke-width="6" stroke-linecap="round" opacity="0.35"/>
-  <path d="M215 215 Q235 200 256 200 Q277 200 297 215"
-        fill="none" stroke="#6366f1" stroke-width="6" stroke-linecap="round" opacity="0.55"/>
-  <path d="M220 240 Q238 225 256 225 Q274 225 292 240"
-        fill="none" stroke="#6366f1" stroke-width="6" stroke-linecap="round" opacity="0.75"/>
+  <!-- 最内层 Core (Radius: 40)
+       继续等比缩放，内层尖尖精确落在对角线中心 -->
+  <g mask="url(#spark-cutout)">
+    <path d="M 100 50 
+             A 40 40 0 1 1 76 122 
+             L 51.4 138.6 
+             L 68 114 
+             A 40 40 0 0 1 100 50 Z" 
+          fill="#ffffff" />
+  </g>
+  
+  <!-- 点缀伴星 -->
+  <path d="M 160 25 Q 160 35 150 35 Q 160 35 160 45 Q 160 35 170 35 Q 160 35 160 25 Z" 
+        fill="#ffffff" 
+        opacity="0.9" />
 </svg>
