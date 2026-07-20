@@ -151,9 +151,18 @@ export async function POST(req: Request) {
             .eq("chat_id", chatId)
 
           if (count === 1) {
-            const title =
-              content.length > 40 ? content.slice(0, 40) + "..." : content
-            await sb.from("chats").update({ title }).eq("id", chatId)
+            // Only auto-name if the user hasn't already renamed it
+            const { data: chatRow } = await sb
+              .from("chats")
+              .select("title")
+              .eq("id", chatId)
+              .single()
+
+            if (!chatRow || chatRow.title === "New Chat") {
+              const title =
+                content.length > 40 ? content.slice(0, 40) + "..." : content
+              await sb.from("chats").update({ title }).eq("id", chatId)
+            }
           }
         } catch (err) {
           console.error("Supabase user-message save failed:", err)
