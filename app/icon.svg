@@ -11,47 +11,50 @@
     </linearGradient>
   </defs>
 
-  <!-- ==================== 图标本体 ==================== -->
-  
-  <!-- 最外层 Echo (Radius: 70) 
-       尾巴顶点 (15, 175) 绝对正对圆心 (100, 90) -->
-  <path d="M 100 20 
-           A 70 70 0 1 1 58 146 
-           L 15 175 
-           L 44 132 
-           A 70 70 0 0 1 100 20 Z" 
-        fill="none" 
-        stroke="rgba(255,255,255,0.2)" 
-        stroke-width="2" 
-        stroke-linecap="round" 
-        stroke-linejoin="round" />
-  
-  <!-- 中间层 Echo (Radius: 55)
-       按圆心绝对比例缩放计算，缝隙上下完美一致 -->
-  <path d="M 100 35 
-           A 55 55 0 1 1 67 134 
-           L 33.2 156.8 
-           L 56 123 
-           A 55 55 0 0 1 100 35 Z" 
-        fill="none" 
-        stroke="url(#echo-grad)" 
-        stroke-width="4" 
-        stroke-linecap="round" 
+  <!-- 气泡内部填充，仅在气泡轮廓内可见 -->
+  <path d="M 100 20
+           A 70 70 0 1 1 58 146
+           L 15 175
+           L 44 132
+           A 70 70 0 0 1 100 20 Z"
+        fill="#0f172a" />
+
+  <!-- 最外层 Echo (Radius: 70) -->
+  <path d="M 100 20
+           A 70 70 0 1 1 58 146
+           L 15 175
+           L 44 132
+           A 70 70 0 0 1 100 20 Z"
+        fill="none"
+        stroke="rgba(255,255,255,0.2)"
+        stroke-width="2"
+        stroke-linecap="round"
         stroke-linejoin="round" />
 
-  <!-- 最内层 Core (Radius: 40)
-       继续等比缩放，内层尖尖精确落在对角线中心 -->
+  <!-- 中间层 Echo (Radius: 55) -->
+  <path d="M 100 35
+           A 55 55 0 1 1 67 134
+           L 33.2 156.8
+           L 56 123
+           A 55 55 0 0 1 100 35 Z"
+        fill="none"
+        stroke="url(#echo-grad)"
+        stroke-width="4"
+        stroke-linecap="round"
+        stroke-linejoin="round" />
+
+  <!-- 最内层 Core (Radius: 40) -->
   <g mask="url(#spark-cutout)">
-    <path d="M 100 50 
-             A 40 40 0 1 1 76 122 
-             L 51.4 138.6 
-             L 68 114 
-             A 40 40 0 0 1 100 50 Z" 
+    <path d="M 100 50
+             A 40 40 0 1 1 76 122
+             L 51.4 138.6
+             L 68 114
+             A 40 40 0 0 1 100 50 Z"
           fill="#ffffff" />
   </g>
-  
+
   <!-- 点缀伴星 -->
-  <path d="M 160 25 Q 160 35 150 35 Q 160 35 160 45 Q 160 35 170 35 Q 160 35 160 25 Z" 
-        fill="#ffffff" 
+  <path d="M 160 25 Q 160 35 150 35 Q 160 35 160 45 Q 160 35 170 35 Q 160 35 160 25 Z"
+        fill="#ffffff"
         opacity="0.9" />
 </svg>
