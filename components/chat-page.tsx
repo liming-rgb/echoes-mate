@@ -113,6 +113,8 @@ export function ChatPage() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [chatError, setChatError] = useState<string | null>(null)
+  const [pendingSend, setPendingSend] = useState<string | null>(null)
+  const justCreatedRef = useRef(false)
 
   // Map AI SDK errors to user-friendly messages
   function formatChatError(error: Error): string {
@@ -211,6 +213,10 @@ export function ChatPage() {
   const { messages, sendMessage, status, setMessages } = useChat({
     id: activeConversationId ?? undefined,
     transport,
+    onFinish: () => {
+      // Refresh sidebar to pick up auto-rename after first message
+      fetchChats().then((data) => setConversations(data))
+    },
     onError: (error) => {
       console.error("Chat error:", error)
       const friendly = formatChatError(error)
@@ -235,6 +241,13 @@ export function ChatPage() {
     if (!activeConversationId) {
       setMessages([])
       setConvSettings(DEFAULT_CONVERSATION_SETTINGS)
+      return
+    }
+
+    // Chat was just created by handleSend — pendingSend will handle the first message
+    if (justCreatedRef.current) {
+      justCreatedRef.current = false
+      setMessagesLoading(false)
       return
     }
 
@@ -264,6 +277,14 @@ export function ChatPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
+
+  // Send pending message after chat is activated
+  useEffect(() => {
+    if (pendingSend && activeConversationId) {
+      sendMessage({ text: pendingSend })
+      setPendingSend(null)
+    }
+  }, [pendingSend, activeConversationId, sendMessage])
 
   // ── Save conversation settings to Supabase ──────────────────
   const saveConversationSettings = useCallback(
@@ -331,22 +352,43 @@ export function ChatPage() {
 
     let chatId = activeConversationId
     if (!chatId) {
-      const id = await createChat()
-      if (!id) return
-      chatId = id
+      // Reuse an existing unused chat if available (only "New Chat" defaults)
+      for (const conv of conversations) {
+        if (conv.title !== "New Chat") continue
+        const { count } = await supabase
+          .from("messages")
+          .select("id", { count: "exact", head: true })
+          .eq("chat_id", conv.id)
+        if (count === 0) {
+          chatId = conv.id
+          break
+        }
+      }
+      // No empty chat found — create one
+      if (!chatId) {
+        const id = await createChat()
+        if (!id) return
+        chatId = id
+      }
       setActiveConversationId(chatId)
+      justCreatedRef.current = true
+      // Defer send until React re-renders with the new chat ID
+      setPendingSend(trimmed)
+      setInputValue("")
+      return
     }
 
     sendMessage({ text: trimmed })
     setInputValue("")
-  }, [inputValue, isStreaming, sendMessage, activeConversationId, createChat])
+  }, [inputValue, isStreaming, sendMessage, activeConversationId, conversations, createChat])
 
   const handleNewChat = useCallback(async () => {
     // If the active chat already has no messages, don't create another blank one.
     if (activeConversationId && messages.length === 0) return
 
-    // Check if any existing chat has no messages — switch to it instead.
+    // Switch to an unused "New Chat" if available (skip renamed empty ones)
     for (const conv of conversations) {
+      if (conv.title !== "New Chat") continue
       const { count } = await supabase
         .from("messages")
         .select("id", { count: "exact", head: true })
